@@ -3,100 +3,130 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ライセンス認証システム</title>
+  <title>製品ライセンス有効化ポータル</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
   </style>
 </head>
-<body class="bg-[#0b0f19] min-h-screen flex items-center justify-center p-6 antialiased selection:bg-cyan-500/20 selection:text-cyan-400 relative overflow-hidden">
+<body class="bg-[#f8fafc] min-h-screen flex items-center justify-center p-4 md:p-8 antialiased text-slate-800">
 
-  <!-- Hiệu ứng đèn Neon mờ phía sau tạo chiều sâu (Ambient Glow) -->
-  <div class="absolute w-[400px] h-[400px] bg-gradient-to-tr from-indigo-600/10 to-cyan-600/10 rounded-full blur-[80px] -top-20 -left-20 pointer-events-none"></div>
-  <div class="absolute w-[400px] h-[400px] bg-gradient-to-br from-violet-600/10 to-fuchsia-600/10 rounded-full blur-[80px] -bottom-20 -right-20 pointer-events-none"></div>
-
-  <!-- Card chính với viền phát sáng tinh tế -->
-  <div class="bg-[#131b2e]/90 backdrop-blur-xl w-full max-w-lg rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border border-slate-800 overflow-hidden relative transition-all duration-300 hover:border-slate-700/80">
-
-    <!-- Header -->
-    <div class="px-8 pt-8 pb-6 flex items-center justify-between border-b border-slate-800/60">
-      <div class="flex items-center gap-4">
-        <!-- Icon Badge với hiệu ứng Gradient phát sáng -->
-        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500/10 to-indigo-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-lg shadow-[0_0_15px_rgba(34,211,238,0.1)]">
-          <i class="fa-solid fa-key"></i>
-        </div>
+  <!-- Container lớn tích hợp đầy đủ thông tin -->
+  <div class="bg-white w-full max-w-4xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-slate-100 overflow-hidden flex flex-col md:flex-row">
+    
+    <!-- CỘT TRÁI: Form nhập liệu và Tiến trình (Chiếm 60%) -->
+    <div class="flex-1 p-6 md:p-8 border-b md:border-b-0 md:border-r border-slate-100">
+      
+      <!-- Header chính -->
+      <div class="flex items-center justify-between mb-6">
         <div>
-          <h1 class="text-xl font-bold text-slate-100 tracking-tight flex items-center gap-2">
-            製品ライセンス認証
-          </h1>
-          <p class="text-[10px] text-cyan-400 font-bold tracking-widest uppercase mt-0.5">Activation Portal</p>
+          <h1 class="text-xl font-bold text-slate-900 tracking-tight">ライセンス有効化</h1>
+          <p class="text-xs text-slate-400 mt-0.5">License Activation Wizard</p>
+        </div>
+        <div class="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-semibold">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          安全な接続
         </div>
       </div>
-      <!-- Trạng thái an toàn chuẩn Cyber -->
-      <div class="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-lg text-xs font-semibold">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
-        SECURE
+
+      <!-- Thanh tiến trình (Steps Indicator) -->
+      <div class="flex items-center gap-2 mb-8 bg-slate-50 p-3 rounded-xl border border-slate-100">
+        <div class="flex items-center gap-2 text-xs font-bold text-indigo-600 px-2 py-1 bg-white rounded-md shadow-xs">
+          <span class="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px]">1</span>
+          情報の入力
+        </div>
+        <div class="h-px bg-slate-200 flex-1"></div>
+        <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 px-2">
+          <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-[10px]">2</span>
+          確認・認証
+        </div>
+        <div class="h-px bg-slate-200 flex-1"></div>
+        <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 px-2">
+          <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-[10px]">3</span>
+          完了
+        </div>
       </div>
+
+      <!-- Form nhập liệu chính -->
+      <form id="activation-form" class="space-y-5" onsubmit="event.preventDefault();">
+        
+        <!-- Trường số 1: Ref.No. -->
+        <div class="space-y-1.5">
+          <label for="ref-no" class="text-xs font-bold text-slate-500 uppercase tracking-wider">
+            参照番号 (Ref.No.) <span class="text-slate-400 font-normal">（省略可能）</span>
+          </label>
+          <input type="text" id="ref-no" name="ref_no" placeholder="例：123456"
+            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 font-mono text-sm transition-all focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none">
+        </div>
+
+        <!-- Trường số 2: Install ID -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between items-center">
+            <label for="install-id" class="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              インストールID (IID)
+            </label>
+            <span class="text-xs text-slate-400 font-medium">54桁または63桁の数字</span>
+          </div>
+          <textarea id="install-id" name="install_id" rows="4" required 
+            placeholder="ここにインストールID（数字のみ）を入力または貼り付けてください"
+            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 text-sm transition-all focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none resize-none font-mono leading-relaxed"></textarea>
+          <p class="text-[11px] text-slate-400 leading-normal flex items-start gap-1">
+            <i class="fa-solid fa-circle-info text-slate-300 mt-0.5"></i>
+            <span>ブロックごとのスペースやハイフン（-）は自動的に除去されますので、そのまま貼り付けて構いません。</span>
+          </p>
+        </div>
+
+        <!-- Nút hành động -->
+        <div class="pt-2">
+          <button type="submit"
+            class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold text-sm rounded-xl shadow-[0_4px_12px_rgba(79,70,229,0.15)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.2)] active:scale-[0.99] transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer">
+            ライセンスを確認して次へ <i class="fa-solid fa-arrow-right text-xs"></i>
+          </button>
+        </div>
+
+      </form>
     </div>
 
-    <!-- Form nhập liệu chính -->
-    <form id="activation-form" class="p-8 space-y-6" onsubmit="event.preventDefault();">
+    <!-- CỘT PHẢI: Hướng dẫn & Trợ giúp (Chiếm 40%) -->
+    <div class="w-full md:w-80 bg-slate-50/60 p-6 md:p-8 flex flex-col justify-between">
+      <div class="space-y-5">
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-question text-slate-400"></i> よくある質問と手順
+        </h3>
+        
+        <!-- Hướng dẫn 1 -->
+        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-2xs space-y-1.5">
+          <h4 class="text-xs font-bold text-slate-800 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+            インストールIDの確認方法
+          </h4>
+          <p class="text-[11px] text-slate-500 leading-relaxed">
+            ソフトウェアのライセンス認証画面で「電話による認証」を選択すると、画面に6桁 hoặc 7桁ずつの数字が並んだ「インストールID」が表示されます。
+          </p>
+        </div>
 
-      <!-- Trường số 1: Ref.No. -->
-      <div class="space-y-2">
-        <label for="ref-no" class="text-xs font-bold text-slate-400 uppercase tracking-wider block">
-          参照番号 <span class="text-slate-500 font-normal text-[11px]">（任意）</span>
-        </label>
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-            <i class="fa-regular fa-hashtag text-xs"></i>
-          </div>
-          <input type="text" id="ref-no" name="ref_no" placeholder="例：123456"
-            class="w-full pl-10 pr-4 py-3 bg-[#0f1626] border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 font-mono text-sm transition-all duration-200 focus:bg-[#0f1626] focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none">
+        <!-- Hướng dẫn 2 -->
+        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-2xs space-y-1.5">
+          <h4 class="text-xs font-bold text-slate-800 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+            認証がうまくいかない場合
+          </h4>
+          <p class="text-[11px] text-slate-500 leading-relaxed">
+            入力された数字の桁数に過不足がないか再度ご確認ください。問題が解決しない場合は、ご購入元のサポート窓口まで直接お問い合わせください。
+          </p>
         </div>
       </div>
 
-      <!-- Trường số 2: Install ID -->
-      <div class="space-y-2">
-        <div class="flex justify-between items-center">
-          <label for="install-id" class="text-xs font-bold text-slate-400 uppercase tracking-wider">
-            インストールID 
-          </label>
-          <span class="text-xs text-cyan-400 font-semibold flex items-center gap-1 hover:text-cyan-300 cursor-pointer transition-colors">
-            <i class="fa-regular fa-circle-question"></i> ヘルプ
-          </span>
-        </div>
-        <textarea id="install-id" name="install_id" rows="4" required 
-          placeholder="発行されたコードをここに入力または貼り付けてください"
-          class="w-full px-4 py-3 bg-[#0f1626] border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 text-sm transition-all duration-200 focus:bg-[#0f1626] focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none resize-none font-mono leading-relaxed"></textarea>
-        <div class="flex items-start gap-1.5 text-[11px] text-slate-500 leading-normal pt-1">
-          <i class="fa-solid fa-circle-info text-slate-600 mt-0.5"></i>
-          <span>コピーした文字列をそのまま貼り付けるとシステムが自動的に認識します。</span>
-        </div>
+      <!-- Footer bảo mật góc dưới -->
+      <div class="mt-8 pt-4 border-t border-slate-200/60 text-[10px] text-slate-400 space-y-1">
+        <p class="flex items-center gap-1"><i class="fa-solid fa-lock text-slate-400"></i> End-to-End Encrypted</p>
+        <p>&copy; License Activation Portal</p>
       </div>
-
-      <!-- Nút bấm dạng Neon Glow phát sáng -->
-      <div class="pt-2">
-        <button type="submit"
-          class="w-full py-3.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-sm rounded-xl shadow-[0_4px_20px_rgba(34,211,238,0.2)] hover:shadow-[0_4px_25px_rgba(34,211,238,0.35)] active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer tracking-wider">
-          次へ進む 
-          <i class="fa-solid fa-arrow-right text-xs"></i>
-        </button>
-      </div>
-
-    </form>
-
-    <!-- Footer -->
-    <div class="px-8 py-4 bg-[#0f1626]/50 border-t border-slate-800/60 flex justify-between items-center text-[11px] text-slate-500 font-medium">
-      <span class="flex items-center gap-1.5">
-        <i class="fa-solid fa-lock-keyhole text-cyan-500/70"></i> End-to-End 暗号化
-      </span>
-      <span>&copy; Activation Server</span>
     </div>
 
   </div>
