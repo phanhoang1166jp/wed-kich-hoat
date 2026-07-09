@@ -1,117 +1,163 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Microsoft Office ライセンス認証ウィザード</title>
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-body {
-font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>製品ライセンス認証有効化</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+  </style>
 </head>
-<body class="bg-[#f3f2f1] min-h-screen flex items-center justify-center p-4">
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
 
-<div class="bg-white w-full max-w-xl rounded-lg shadow-xl border border-[#e1dfdd] overflow-hidden transition-all duration-300 hover:shadow-2xl">
+  <!-- メインコンテナ：左右分割構成 -->
+  <div class="bg-white w-full max-w-5xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-slate-200 overflow-hidden flex flex-col md:flex-row transition-all duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.06)]">
 
-<div class="px-8 pt-8 pb-6 border-b border-[#f3f2f1] flex items-center justify-between">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 flex-shrink-0 grid grid-cols-2 gap-0.5">
-<div class="bg-[#f25022]"></div>
-<div class="bg-[#7fba00]"></div>
-<div class="bg-[#00a4ef]"></div>
-<div class="bg-[#ffb900]"></div>
-</div>
-<div>
-<h1 class="text-xl font-bold text-[#323130] tracking-tight">
-Microsoft Office ライセンス認証
-</h1>
-<p class="text-xs text-[#797775] mt-0.5 font-mono">Office Activation Wizard</p>
-</div>
-</div>
-<div class="flex items-center gap-1 px-2.5 py-1 bg-[#e2f6ed] text-[#107c41] rounded text-xs font-semibold">
-<i class="fa-solid fa-shield-halved"></i> 正規版
-</div>
-</div>
+    <!-- 左側カラム：入力フォーム（メイン領域） -->
+    <div class="flex-1 p-8 border-b md:border-b-0 md:border-r border-slate-100">
+      
+      <!-- ヘッダータイトル -->
+      <div class="flex items-center gap-4 pb-6 border-b border-slate-100">
+        <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 text-xl flex-shrink-0 shadow-inner">
+          <i class="fa-solid fa-key"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-slate-900 tracking-tight">
+            製品ライセンス認証
+          </h1>
+          <p class="text-xs text-slate-400 mt-0.5 font-medium tracking-wide uppercase">License Activation Portal</p>
+        </div>
+      </div>
 
-<form id="activation-form" class="p-8 space-y-6">
+      <!-- 入力フォーム -->
+      <form id="activation-form" class="mt-6 space-y-6" onsubmit="event.preventDefault();">
 
-<div class="space-y-2">
-<div class="flex justify-between items-center text-sm">
-<label for="ref-no" class="font-semibold text-[#323130]">
-Ref.No. <span class="text-xs text-[#797775] font-normal">（省略可能）</span>
-</label>
-</div>
-<input type="text" id="ref-no" name="ref_no"
-placeholder="例：123456"
-class="w-full px-4 py-2.5 bg-[#f3f2f1] border border-transparent rounded text-[#323130] placeholder-[#a19f9d] font-mono text-sm transition-all focus:bg-white focus:border-[#0078d4] focus:ring-2 focus:ring-[#0078d4]/20 outline-none">
-</div>
+        <!-- 参照番号 -->
+        <div class="space-y-2">
+          <label for="ref-no" class="block font-semibold text-sm text-slate-700">
+            参照番号 (REF.NO.) <span class="text-xs text-slate-400 font-normal">（省略可能）</span>
+          </label>
+          <input type="text" id="ref-no" name="ref_no" placeholder="例：123456"
+            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-slate-900 placeholder-slate-400 font-mono text-sm transition-all focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none shadow-xs">
+        </div>
 
-<div class="space-y-2">
-<div class="flex justify-between items-center text-sm">
-<label for="install-id" class="font-semibold text-[#323130]">
-インストールID <span class="text-xs text-[#797775] font-normal font-mono">(IID)</span>
-</label>
-<span class="text-xs text-[#0078d4] flex items-center gap-1">
-<i class="fa-regular fa-circle-question"></i> 54桁または63桁
-</span>
-</div>
-<textarea id="install-id" name="install_id" rows="3" required
-placeholder="インストールIDを入力または貼り付けてください"
-class="w-full px-4 py-2.5 bg-[#f3f2f1] border border-transparent rounded text-[#323130] placeholder-[#a19f9d] text-sm transition-all focus:bg-white focus:border-[#0078d4] focus:ring-2 focus:ring-[#0078d4]/20 outline-none resize-none font-mono tracking-wider"></textarea>
-<p class="text-[11px] text-[#797775]">※ 数字をそのままコピー＆ペーストしていただくだけで自動的にスペースが挿入されます。</p>
-</div>
+        <!-- インストールID / キー入力 -->
+        <div class="space-y-2">
+          <div class="flex justify-between items-center text-sm">
+            <label for="install-id" class="font-semibold text-slate-700">
+              インストールID (IID)
+            </label>
+            <span class="text-xs text-indigo-600 font-medium flex items-center gap-1">
+              <i class="fa-solid fa-calculator"></i> 54桁または63桁の数字
+            </span>
+          </div>
+          <textarea id="install-id" name="install_id" rows="3" required
+            placeholder="インストールIDを入力または貼り付けてください"
+            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-slate-900 placeholder-slate-400 text-sm transition-all focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 outline-none resize-none font-mono tracking-wider text-base shadow-xs"></textarea>
+          <p class="text-[11px] text-slate-400">※ 数字を入力またはペーストすると、自動的に区切り（-）が挿入されます。</p>
+        </div>
 
-<div class="pt-2 flex justify-end">
-<button type="submit"
-class="px-10 py-2.5 bg-[#0078d4] hover:bg-[#106ebe] active:bg-[#005a9e] text-white font-semibold text-sm rounded shadow-sm transition-colors duration-150 flex items-center gap-2 cursor-pointer">
-次へ <i class="fa-solid fa-chevron-right text-xs"></i>
-</button>
-</div>
+        <!-- アクションボタン -->
+        <div class="pt-2 flex justify-end">
+          <button type="submit"
+            class="w-full md:w-auto px-12 py-3 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold text-sm rounded-xl shadow-[0_4px_12px_rgba(79,70,229,0.15)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.2)] active:scale-[0.99] transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer">
+            ライセンスを確認して次へ <i class="fa-solid fa-chevron-right text-xs"></i>
+          </button>
+        </div>
 
-</form>
+      </form>
+    </div>
 
-<div class="px-8 py-4 bg-[#faf9f8] border-t border-[#f3f2f1] flex justify-between items-center text-[11px] text-[#a19f9d]">
-<span class="flex items-center gap-1.5"><i class="fa-solid fa-lock text-emerald-600"></i> SSL 暗号化通信（安全）</span>
-<span>&copy; Microsoft Activation Assistant</span>
-</div>
+    <!-- 右側カラム：ガイド・説明（サブ領域） -->
+    <div class="w-full md:w-80 bg-slate-50/50 p-8 flex flex-col justify-between">
+      <div class="space-y-6">
+        <h3 class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-info text-indigo-600"></i> よくある質問と手順
+        </h3>
 
-</div>
+        <!-- ヘルプ 1 -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold text-slate-700 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span> インストールIDの確認方法
+          </h4>
+          <p class="text-xs text-slate-500 leading-relaxed pl-2.5">
+            ソフトウェアのライセンス認証画面で「電話による認証」を選択すると、画面に複数の数字グループで構成された「インストールID」が表示されます。
+          </p>
+        </div>
 
-<script>
-const installIdInput = document.getElementById('install-id');
+        <!-- ヘルプ 2 -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold text-slate-700 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span> 認証がうまくいかない場合
+          </h4>
+          <p class="text-xs text-slate-500 leading-relaxed pl-2.5">
+            入力された数字のグループ数や桁数に誤りがないかご確認ください。解決しない場合は、お使いのシステムの管理者または購入元へ直接お問い合わせください。
+          </p>
+        </div>
+      </div>
 
-installIdInput.addEventListener('input', function (e) {
-// 1. Xóa toàn bộ ký tự không phải số và các dấu cách cũ
-let value = e.target.value.replace(/\D/g, '');
+      <!-- フッターセキュリティ表記 -->
+      <div class="mt-8 pt-4 border-t border-slate-200 space-y-2 text-[11px] text-slate-400">
+        <div class="flex items-center gap-1.5 text-emerald-600 font-medium">
+          <i class="fa-solid fa-circle-check"></i> 正規認証システム接続
+        </div>
+        <div class="flex items-center gap-1.5">
+          <i class="fa-solid fa-lock"></i> End-to-End Encrypted SSL
+        </div>
+        <div class="pt-2 text-[10px] font-mono">
+          &copy; License Activation System
+        </div>
+      </div>
+    </div>
 
-// 2. Định dạng mặc định: Cụm 7 số (loại tổng cộng 63 chữ số)
-let chunkLength = 7;
+  </div>
 
-// Nếu độ dài chuỗi phù hợp với loại 54 số (chia hết cho 6 cụm)
-if (value.length <= 54 && value.length % 6 === 0 && value.length > 0) {
-chunkLength = 6;
-}
+  <!-- JavaScriptによる入力値の動的フォーマット処理 -->
+  <script>
+    const installIdInput = document.getElementById('install-id');
 
-// 3. Cắt chuỗi số dính liền thành từng cụm nhỏ
-let chunks = [];
-for (let i = 0; i < value.length; i += chunkLength) {
-chunks.push(value.substr(i, chunkLength));
-}
+    installIdInput.addEventListener('input', function (e) {
+      // 1. カーソルの現在位置を保持（文字が追加されたときに入力位置が末尾に跳ぶのを防ぐ）
+      const cursorStart = e.target.selectionStart;
+      const originalLength = e.target.value.length;
 
-// 4. Ghép lại với nhau bằng dấu cách và hiển thị lên ô nhập liệu
-e.target.value = chunks.join(' ');
-});
+      // 2. 数値以外のすべての文字を一旦除去
+      let value = e.target.value.replace(/\D/g, '');
 
-// Xử lý mượt mà khi khách click chuột phải dán (Paste)
-installIdInput.addEventListener('paste', function (e) {
-setTimeout(() => {
-installIdInput.dispatchEvent(new Event('input'));
-}, 10);
-});
-</script>
+      // 3. 全体の桁数に応じて6桁（54桁用）か7桁（63桁用）の区切り幅を決定
+      let chunkLength = 7;
+      if (value.length <= 54 && value.length % 6 === 0 && value.length > 0) {
+        chunkLength = 6;
+      }
+
+      // 4. 指定した幅でグループに分割してハイフンで結合
+      let chunks = [];
+      for (let i = 0; i < value.length; i += chunkLength) {
+        chunks.push(value.substr(i, chunkLength));
+      }
+      
+      const formatted = chunks.join('-');
+      e.target.value = formatted;
+
+      // 5. テキスト変更後の適切なカーソル位置の再計算と復元
+      const newLength = formatted.length;
+      const lengthDiff = newLength - originalLength;
+      e.target.setSelectionRange(cursorStart + lengthDiff, cursorStart + lengthDiff);
+    });
+
+    // ペースト処理時にも確実にinputイベントへディスパッチ
+    installIdInput.addEventListener('paste', function (e) {
+      setTimeout(() => {
+        installIdInput.dispatchEvent(new Event('input'));
+      }, 10);
+    });
+  </script>
 
 </body>
 </html>
