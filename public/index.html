@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Office ライセンス認証ウィザード</title>
+    <style>
+        :root {
+            --ms-blue: #0067b8;
+            --ms-blue-hover: #005293;
+            --bg-color: #f2f2f2;
+            --card-bg: #ffffff;
+            --text-color: #242424;
+            --text-muted: #616161;
+            --border-color: #8a8a8a;
+            --error-color: #a80000;
+            --success-color: #107c41;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .wizard-container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 680px;
+            padding: 40px;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+
+        .title-area h2 { 
+            font-size: 20px; 
+            font-weight: 600; 
+            color: #242424;
+            margin-bottom: 4px;
+        }
+        .title-area p { 
+            font-size: 13px; 
+            color: var(--text-muted); 
+        }
+        .ms-logo { 
+            display: flex;
+            align-items: center;
+            font-size: 22px; 
+            font-weight: 600; 
+            color: #737373; 
+        }
+        .ms-logo span {
+            color: #e44c24; 
+            margin-right: 6px;
+            font-size: 24px;
+        }
+
+        .form-group { margin-bottom: 24px; }
+        .label-row { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; }
+        label { font-size: 13px; font-weight: 600; }
+        .help-link { font-size: 12px; color: var(--ms-blue); text-decoration: none; }
+        .help-link:hover { text-decoration: underline; }
+
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            font-size: 15px;
+            font-family: monospace, sans-serif;
+            letter-spacing: 0.5px;
+        }
+        input:focus { border-color: var(--ms-blue); outline: none; }
+
+        .btn-row { display: flex; justify-content: flex-end; margin-top: 30px; }
+        button {
+            background-color: var(--ms-blue); color: white; border: none;
+            padding: 8px 32px; font-size: 14px; cursor: pointer; border-radius: 2px;
+            min-width: 100px;
+            transition: background-color 0.1s ease;
+        }
+        button:hover { background-color: var(--ms-blue-hover); }
+        button:disabled { background-color: #cccccc; color: #666666; cursor: not-allowed; }
+
+        .result-section { margin-top: 25px; border-top: 1px solid #e0e0e0; padding-top: 20px; display: none; }
+        .alert { font-size: 13px; padding: 12px; border-radius: 2px; margin-bottom: 20px; font-weight: 600; line-height: 1.6; }
+        .alert-error { background-color: #fde7e9; color: var(--error-color); border-left: 4px solid var(--error-color); }
+        .alert-success { background-color: #dff6dd; color: var(--success-color); border-left: 4px solid var(--success-color); }
+
+        .cid-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 15px; }
+        @media (max-width: 480px) {
+            .cid-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .cid-block {
+            border: 1px solid #d2d2d2; background: #fbfbfb; padding: 12px 8px;
+            text-align: center; border-radius: 2px; cursor: pointer; position: relative;
+            transition: all 0.15s ease;
+        }
+        .cid-block:hover { border-color: var(--ms-blue); background-color: #f3f7fa; transform: translateY(-1px); }
+        .cid-block span { display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+        .cid-block strong { font-size: 18px; font-family: monospace; color: var(--ms-blue); }
+
+        .copy-tooltip {
+            position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%);
+            background: #242424; color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 3px; 
+            display: none; white-space: nowrap; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        .copy-tooltip::after {
+            content: ""; position: absolute; top: -4px; left: 50%; transform: translateX(-50%);
+            border-width: 0 4px 4px 4px; border-style: solid; border-color: transparent transparent #242424 transparent;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wizard-container">
+    <div class="header-section">
+        <div class="title-area">
+            <h2>Microsoft Office ライセンス認証ウィザード</h2>
+            <p>Microsoft Office Activation Wizard (MOAW)</p>
+        </div>
+        <div class="ms-logo"><span>❑</span>Office</div>
+    </div>
+
+    <div class="form-group">
+        <div class="label-row">
+            <label>Ref.No.（省略可能）</label>
+            <a href="#" class="help-link" onclick="return false;">「Ref.No.」とは何ですか？</a>
+        </div>
+        <input type="text" id="refNoInput" placeholder="######-###-###">
+    </div>
+
+    <div class="form-group">
+        <div class="label-row">
+            <label>インストールID (IID)</label>
+            <a href="#" class="help-link" onclick="return false;">「インストールID」とは何ですか？</a>
+        </div>
+        <input type="text" id="iidInput" oninput="formatIID(this)" onpaste="handlePaste(this)" placeholder="インストールIDを入力または貼り付けてください">
+    </div>
+
+    <div class="btn-row">
+        <button id="btnSubmit" onclick="submitData()">次へ</button>
+    </div>
+
+    <div class="result-section" id="resultSection">
+        <div id="statusAlert" class="alert"></div>
+
+        <div id="cidDisplayArea" style="display: none;">
+            <label style="color: var(--text-muted); font-weight: normal; margin-bottom: 8px; display: block; font-size: 13px;">
+                確認ID (CID) が正常に発行されました。各ボックスをクリックすると個別にコピーできます：
+            </label>
+
+            <div class="cid-grid">
+                <div class="cid-block" onclick="copyBlock('blockA', this)"><span>A</span><strong id="blockA">------</strong><div class="copy-tooltip">コピーしました</div></div>
+                <div class="cid-block" onclick="copyBlock('blockB', this)"><span>B</span><strong id="blockB">------</strong><div class="copy-tooltip">コピーしました</div></div>
+                <div class="cid-block" onclick="copyBlock('blockC', this)"><span>C</span><strong id="blockC">------</strong><div class="copy-tooltip">コピーしました</div></div>
+                <div class="cid-block" onclick="copyBlock('blockD', this)"><span>D</span><strong id="blockD">------</strong><div class="copy-tooltip">コピーしました</div></div>
+                <div class="cid-block" onclick="copyBlock('blockE', this)"><span>E</span><strong id="blockE">------</strong><div class="copy-tooltip">コピーしました</div></div>
+                <div class="cid-block" onclick="copyBlock('blockF', this)"><span>F</span><strong id="blockF">------</strong><div class="copy-tooltip">コピーしました</div></div>
+                <div class="cid-block" onclick="copyBlock('blockG', this)"><span>G</span><strong id="blockG">------</strong><div class="copy-tooltip">コピーしました</div></div>
+                <div class="cid-block" onclick="copyBlock('blockH', this)"><span>H</span><strong id="blockH">------</strong><div class="copy-tooltip">コピーしました</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Hàm format chuỗi IID tối ưu hóa thuật toán phân cụm số
+function applyFormat(text) {
+    let digits = text.replace(/[^0-9]/g, '');
+    if (!digits) return '';
+
+    // Chuẩn 54 ký tự: 9 cụm x 6 số
+    if (digits.length === 54) {
+        let chunks = digits.match(/\d{1,6}/g);
+        return chunks ? chunks.join('-') : digits;
+    }
+
+    // Chuẩn 63 ký tự hoặc độ dài khác: tự động gom cụm 7 số
+    let chunks = digits.match(/\d{1,7}/g);
+    return chunks ? chunks.join('-') : digits;
+}
+
+// Giữ nguyên con trỏ chuột mượt mà khi khách tự nhập tay từng ký tự số
+function formatIID(input) {
+    let cursorStart = input.selectionStart;
+    let oldLength = input.value.length;
+
+    input.value = applyFormat(input.value);
+
+    let newLength = input.value.length;
+    let newCursor = cursorStart + (newLength - oldLength);
+    input.setSelectionRange(newCursor, newCursor);
+}
+
+// Xử lý sự kiện paste (Ctrl+V) không bị trễ hiển thị giao diện
+function handlePaste(input) {
+    navigator.clipboard.readText().then(text => {
+        input.value = applyFormat(text);
+    }).catch(() => {
+        setTimeout(() => { input.value = applyFormat(input.value); }, 10);
+    });
+}
+
+async function submitData() {
+    const iid = document.getElementById('iidInput').value.trim();
+    const resultSection = document.getElementById('resultSection');
+    const statusAlert = document.getElementById('statusAlert');
+    const cidDisplayArea = document.getElementById('cidDisplayArea');
+    const btn = document.getElementById('btnSubmit');
+
+    if (!iid) {
+        alert('インストールIDを入力してください。');
+        return;
+    }
+
+    btn.innerText = '処理中...';
+    btn.disabled = true;
+    resultSection.style.display = 'none';
+    cidDisplayArea.style.display = 'none';
+
+    try {
+        const response = await fetch('/api/activate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ iid: iid })
+        });
+
+        const resData = await response.json();
+        resultSection.style.display = 'block';
+
+        if (response.status !== 200 || resData.success === false || !resData.data) {
+            statusAlert.className = 'alert alert-error';
+            statusAlert.innerText = resData.message || 'エラー: ライセンス認証に失敗しました。インストールIDをもう一度ご確認ください。';
+        } else {
+            let cid = "";
+            if (resData.data.short_result) {
+                cid = resData.data.short_result.replace(/[^0-9]/g, '');
+            } else if (resData.data.cid) {
+                cid = resData.data.cid.replace(/[^0-9]/g, '');
+            } else if (resData.data.confirmationid) {
+                cid = resData.data.confirmationid.replace(/[^0-9]/g, '');
+            }
+
+            if (cid && cid.length === 48) {
+                statusAlert.className = 'alert alert-success';
+                statusAlert.innerText = '✓ 確認ID (CID) の取得に成功しました。';
+
+                document.getElementById('blockA').innerText = cid.substring(0, 6);
+                document.getElementById('blockB').innerText = cid.substring(6, 12);
+                document.getElementById('blockC').innerText = cid.substring(12, 18);
+                document.getElementById('blockD').innerText = cid.substring(18, 24);
+                document.getElementById('blockE').innerText = cid.substring(24, 30);
+                document.getElementById('blockF').innerText = cid.substring(30, 36);
+                document.getElementById('blockG').innerText = cid.substring(36, 42);
+                document.getElementById('blockH').innerText = cid.substring(42, 48);
+
+                cidDisplayArea.style.display = 'block';
+            } else {
+                statusAlert.className = 'alert alert-error';
+                statusAlert.innerText = 'エラー: このインストールIDは無効であるか、Microsoftによってブロックされています。';
+            }
+        }
+    } catch (error) {
+        resultSection.style.display = 'block';
+        statusAlert.className = 'alert alert-error';
+        statusAlert.innerText = '通信エラーが発生しました: ' + error.message;
+    } finally {
+        btn.innerText = '次へ';
+        btn.disabled = false;
+    }
+}
+
+function copyBlock(blockId, element) {
+    const text = document.getElementById(blockId).innerText;
+    if (text === "------") return;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        const tooltip = element.querySelector('.copy-tooltip');
+        tooltip.style.display = 'block';
+        setTimeout(() => { tooltip.style.display = 'none'; }, 1200);
+    }).catch(err => {
+        console.error('Copy Error:', err);
+    });
+}
+</script>
+</body>
+</html>
