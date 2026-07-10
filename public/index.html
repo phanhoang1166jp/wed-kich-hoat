@@ -1,161 +1,508 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>製品ライセンス有効化センター</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Office インストールID (IID) 認証ポータル</title>
+    <style>
+        /* ==========================================================================
+           1. グローバル変数と基本設定 (Variables & Reset)
+           ========================================================================== */
+        :root {
+            --ms-blue: #0f6cbd;
+            --ms-blue-hover: #115ea3;
+            --success: #10b981;
+            --success-light: #f0fdf4;
+            --error: #ef4444;
+            --error-light: #fef2f2;
+            --border: #e0e0e0;
+            --text-main: #242424;
+            --text-sub: #555555;
+            --bg-body: #f4f6f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Noto Sans JP", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        /* メインコンテナ */
+        .container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 740px;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        /* ==========================================================================
+           2. UIコンポーネント (UI Components)
+           ========================================================================== */
+        
+        /* ヘッダー & Microsoft風ロゴ */
+        .header {
+            margin-bottom: 28px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .ms-logo {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2px;
+            width: 23px;
+            height: 23px;
+            flex-shrink: 0;
+        }
+        .ms-logo .box { width: 10.5px; height: 10.5px; }
+        .ms-logo .box.red { background-color: #f25022; }
+        .ms-logo .box.green { background-color: #7fba00; }
+        .ms-logo .box.blue { background-color: #00a4ef; }
+        .ms-logo .box.yellow { background-color: #ffb900; }
+
+        .header-title h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #111827;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .header-title p {
+            font-size: 13px;
+            color: var(--text-sub);
+            margin-top: 4px;
+        }
+
+        .badge {
+            font-size: 12px;
+            background-color: #f0f4f9;
+            color: var(--ms-blue);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid rgba(15, 108, 189, 0.12);
+        }
+
+        /* 3ステップ案内エリア */
+        .step-container {
+            background: #fafafa;
+            border: 1px solid #eaeaea;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 35px;
+        }
+
+        .step-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        .step-card {
+            background: #ffffff;
+            border: 1px solid #f0f0f0;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+            position: relative;
+        }
+
+        .step-num {
+            display: inline-block;
+            background: var(--ms-blue);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .step-text {
+            font-size: 12px;
+            color: var(--text-sub);
+            line-height: 1.6;
+        }
+
+        .step-text b {
+            color: #000000;
+            font-weight: 600;
+        }
+
+        /* エラーメッセージ表示エリア（初期状態は非表示） */
+        .error-banner {
+            display: none;
+            background-color: var(--error-light);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            color: #b91c1c;
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 14px;
+            padding: 0 2px;
+        }
+
+        /* ==========================================================================
+           3. 入力フォームのグリッド配置 (Input Grid System)
+           ========================================================================== */
+        .iid-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 580px) {
+            .iid-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .input-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #8c8c8c;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .iid-input {
+            width: 100%;
+            padding: 16px 12px;
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            border: 1px solid var(--border);
+            border-bottom: 2px solid #b5b5b5;
+            border-radius: 6px;
+            outline: none;
+            background: #ffffff;
+            transition: all 0.15s ease;
+            letter-spacing: 1px;
+            color: #111827;
+        }
+
+        .iid-input:focus {
+            border-color: var(--ms-blue);
+            border-bottom-color: var(--ms-blue);
+            box-shadow: 0 0 0 4px rgba(15, 108, 189, 0.12);
+        }
+
+        /* 正しく入力された状態 (7桁) */
+        .iid-input.filled {
+            border-color: var(--success);
+            border-bottom-color: var(--success);
+            background-color: var(--success-light);
+            color: #047857;
+        }
+
+        /* エラー状態 (文字数不足など) */
+        .iid-input.input-error {
+            border-color: var(--error) !important;
+            border-bottom-color: var(--error) !important;
+            background-color: var(--error-light) !important;
+            color: #b91c1c !important;
+        }
+
+        /* アイコン配置用 */
+        .input-group .status-icon {
+            position: absolute;
+            right: 12px;
+            bottom: 18px;
+            opacity: 0;
+            transform: scale(0.7);
+            transition: all 0.2s ease;
+            pointer-events: none;
+        }
+
+        .iid-input.filled + .status-icon.success-icon {
+            opacity: 1;
+            transform: scale(1);
+            color: var(--success);
+        }
+
+        .iid-input.input-error + .status-icon.error-icon {
+            opacity: 1;
+            transform: scale(1);
+            color: var(--error);
+        }
+
+        /* 送信ボタン */
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            background-color: var(--ms-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 4px 12px rgba(15, 108, 189, 0.15);
+        }
+
+        .btn-submit:hover {
+            background-color: var(--ms-blue-hover);
+            box-shadow: 0 6px 20px rgba(15, 108, 189, 0.25);
+        }
+
+        .footer {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 12px;
+            color: #a3a3a3;
+        }
+    </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4 md:p-8 antialiased text-slate-800">
+<body>
 
-  <div class="bg-white w-full max-w-5xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-slate-200 overflow-hidden flex flex-col md:flex-row">
-    
-    <div class="flex-1 p-6 md:p-10">
-      
-      <div class="flex items-center gap-4 pb-6 border-b border-slate-100">
-        <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 text-xl flex-shrink-0 shadow-inner">
-          <i class="fa-solid fa-shield-check"></i>
+<div class="container">
+    <!-- ヘッダーエリア -->
+    <div class="header">
+        <div class="header-left">
+            <div class="ms-logo" aria-hidden="true">
+                <div class="box red"></div>
+                <div class="box green"></div>
+                <div class="box blue"></div>
+                <div class="box yellow"></div>
+            </div>
+            <div class="header-title">
+                <h2>インストールID (IID) の入力</h2>
+                <p>Officeの電話認証手続きを完了します</p>
+            </div>
         </div>
-        <div>
-          <h1 class="text-xl font-bold text-slate-900 tracking-tight">製品ライセンス認証</h1>
-          <p class="text-xs text-slate-400 mt-0.5 font-medium tracking-wide uppercase">Activation Portal</p>
-        </div>
-      </div>
-
-      <form id="activation-form" class="mt-6 space-y-6" onsubmit="event.preventDefault();">
-
-        <div class="space-y-2">
-          <label for="ref-no" class="block font-semibold text-sm text-slate-700">
-            参照番号 (REF.NO.) <span class="text-xs text-slate-400 font-normal">（省略可能）</span>
-          </label>
-          <input type="text" id="ref-no" name="ref_no" placeholder="例：123456"
-            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 font-mono text-sm transition-all focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 outline-none">
-        </div>
-
-        <div class="space-y-2">
-          <div class="flex justify-between items-center text-sm">
-            <label for="install-id" class="font-semibold text-slate-700">
-              インストールID (IID)
-            </label>
-            <span class="text-xs text-blue-600 font-medium flex items-center gap-1">
-              <i class="fa-solid fa-calculator"></i> 54桁または63桁の数値
-            </span>
-          </div>
-          
-          <textarea id="install-id" name="install_id" rows="3" required
-            placeholder="インストールIDを入力、またはコピーした数字をそのまま貼り付けてください"
-            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 text-base transition-all focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 outline-none resize-none font-mono tracking-wider"></textarea>
-          
-          <p class="text-[11px] text-slate-400 leading-normal">
-            <i class="fa-solid fa-circle-info text-blue-400/70 mr-0.5"></i> 
-            数字を入力すると、システムが自動的に識別しハイフン（-）で区切ります。
-          </p>
-        </div>
-
-        <div class="pt-2 flex justify-end">
-          <button type="submit"
-            class="w-full md:w-auto px-12 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm rounded-xl shadow-md transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer">
-            ライセンスを確認して次へ <i class="fa-solid fa-chevron-right text-xs"></i>
-          </button>
-        </div>
-
-      </form>
+        <span class="badge">Office 2019 - 2024 / 365 対応</span>
     </div>
 
-    <div class="w-full md:w-80 bg-slate-50/60 p-6 md:p-10 flex flex-col justify-between border-t md:border-t-0 md:border-l border-slate-100">
-      <div class="space-y-6">
-        <h3 class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
-          <i class="fa-solid fa-circle-question text-blue-600"></i> ライセンス認証の手順
-        </h3>
-
-        <div class="space-y-1.5">
-          <h4 class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-            <span class="w-4 h-4 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-[10px] font-mono">1</span>
-            IDの確認
-          </h4>
-          <p class="text-xs text-slate-500 leading-relaxed pl-5">
-            お使いのソフトウェアの認証画面で「電話による認証」を選択し、画面に表示されるインストールID（6桁または7桁の数字のグループ）を確認します。
-          </p>
+    <!-- 利用手順案内 (手入力用) -->
+    <div class="step-container">
+        <div class="step-title">📋 認証手順 (かんたん3ステップ)</div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <span class="step-num">STEP 1</span>
+                <p class="step-text">Officeアプリを開き、<b>「アカウント」</b> ➔ <b>「ライセンス認証」</b> の順に進みます。</p>
+            </div>
+            <div class="step-card">
+                <span class="step-num">STEP 2</span>
+                <p class="step-text">「電話による認証」を選び、画面に出る<b>63桁のインストールID</b>をメモします。</p>
+            </div>
+            <div class="step-card">
+                <span class="step-num">STEP 3</span>
+                <p class="step-text">メモした数字を、下の入力欄に<b>第1グループから順に入力</b>してください。</p>
+            </div>
         </div>
-
-        <div class="space-y-1.5">
-          <h4 class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-            <span class="w-4 h-4 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-[10px] font-mono">2</span>
-            当ポータルでの入力
-          </h4>
-          <p class="text-xs text-slate-500 leading-relaxed pl-5">
-            確認した数字を左側の入力欄に貼り付けます。区切り記号は自動で挿入されるため、連続した数字のままで問題ありません。
-          </p>
-        </div>
-
-        <div class="space-y-1.5">
-          <h4 class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-            <span class="w-4 h-4 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-[10px] font-mono">3</span>
-            確認IDの取得
-          </h4>
-          <p class="text-xs text-slate-500 leading-relaxed pl-5">
-            「次へ」進むとシステムがIDを検証し、次の画面でソフトウェアに入力するための「確認ID」が発行されます。
-          </p>
-        </div>
-      </div>
-
-      <div class="mt-8 pt-4 border-t border-slate-200 space-y-2 text-[11px] text-slate-400 font-medium">
-        <div class="flex items-center gap-1.5 text-emerald-600">
-          <i class="fa-solid fa-circle-check"></i> 安全なSSL暗号化通信
-        </div>
-        <div class="text-[10px] font-mono text-slate-400">
-          &copy; Activation Support Portal
-        </div>
-      </div>
     </div>
 
-  </div>
+    <!-- エラー通知バナー (エラー時にJSで表示) -->
+    <div class="error-banner" id="error-banner">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span id="error-message">入力エラー：7桁に満たないグループがあります。確認のうえ、再入力してください。</span>
+    </div>
 
-  <script>
-    const installIdInput = document.getElementById('install-id');
+    <div class="grid-title">インストールID入力欄（7桁 × 9組）</div>
 
-    installIdInput.addEventListener('input', function (e) {
-      // 1. 現在のカーソル位置と全体の長さを取得（位置ずれ防止）
-      const cursorStart = e.target.selectionStart;
-      const originalLength = e.target.value.length;
+    <!-- 9つの入力グループ -->
+    <div class="iid-grid">
+        <!-- 第 1 〜 9 グループ -->
+        <div class="input-group">
+            <label>第 1 グループ</label>
+            <input type="tel" class="iid-input" maxlength="7" placeholder="0000000" inputmode="numeric">
+            <svg class="status-icon success-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg class="status-icon error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+        <div class="input-group">
+            <label>第 2 グループ</label>
+            <input type="tel" class="iid-input" maxlength="7" placeholder="0000000" inputmode="numeric">
+            <svg class="status-icon success-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg class="status-icon error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+        <div class="input-group">
+            <label>第 3 グループ</label>
+            <input type="tel" class="iid-input" maxlength="7" placeholder="0000000" inputmode="numeric">
+            <svg class="status-icon success-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg class="status-icon error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+        <div class="input-group">
+            <label>第 4 グループ</label>
+            <input type="tel" class="iid-input" maxlength="7" placeholder="0000000" inputmode="numeric">
+            <svg class="status-icon success-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg class="status-icon error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+        <div class="input-group">
+            <label>第 5 グループ</label>
+            <input type="tel" class="iid-input" maxlength="7" placeholder="0000000" inputmode="numeric">
+            <svg class="status-icon success-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg class="status-icon error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+        <div class="input-group">
+            <label>第 6 グループ</label>
+            <input type="tel" class="iid-input" maxlength="7" placeholder="0000000" inputmode="numeric">
+            <svg class="status-icon success-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg class="status-icon error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+        <div class="input-group">
+            <label>第 7 グループ</label>
+            <input type="tel" class="iid-input" maxlength="7" placeholder="0000000" inputmode="numeric">
+            <svg class="status-icon success-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg class="status-icon error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+        <div class="input-group">
+            <label>第 8 グループ</label>
+            <input type="tel" class="iid-input" maxlength="7" placeholder="0000000" inputmode="numeric">
+            <svg class="status-icon success-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg class="status-icon error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+        <div class="input-group">
+            <label>第 9 グループ</label>
+            <input type="tel" class="iid-input" maxlength="7" placeholder="0000000" inputmode="numeric">
+            <svg class="status-icon success-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg class="status-icon error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+    </div>
 
-      // 2. 数値以外の文字（古いハイフンなど）をすべて削除
-      let value = e.target.value.replace(/\D/g, '');
+    <!-- 確認・送信ボタン -->
+    <button type="button" class="btn-submit" id="btn-submit">ライセンスを確認して次へ</button>
 
-      // 3. 桁数から適切な区切り（54桁なら6文字ごと、それ以外は7文字ごと）を判定
-      let chunkLength = 7;
-      if (value.length <= 54 && value.length % 6 === 0 && value.length > 0) {
-        chunkLength = 6;
-      }
+    <div class="footer">
+        ※ 入力された情報は、Microsoftの正規アクティベーションシステムに安全に送信されます。
+    </div>
+</div>
 
-      // 4. 文字列を指定サイズで分割してハイフン（-）で結合
-      let chunks = [];
-      for (let i = 0; i < value.length; i += chunkLength) {
-        chunks.push(value.substr(i, chunkLength));
-      }
-      
-      const formatted = chunks.join('-');
-      e.target.value = formatted;
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const inputs = document.querySelectorAll(".iid-input");
+    const errorBanner = document.getElementById("error-banner");
 
-      // 5. ハイフン挿入によって変化した分のカーソル位置を再計算して復元
-      const newLength = formatted.length;
-      const lengthDiff = newLength - originalLength;
-      e.target.setSelectionRange(cursorStart + lengthDiff, cursorStart + lengthDiff);
+    inputs.forEach((input, index) => {
+        // キー入力時のリアルタイム制御
+        input.addEventListener("input", () => {
+            // エラー状態が出ている場合は入力を始めたら解除する
+            input.classList.remove("input-error");
+            errorBanner.style.display = "none";
+
+            let val = input.value.replace(/\D/g, ""); // 数字以外を除外
+            input.value = val;
+
+            if (val.length === 7) {
+                input.classList.add("filled");
+                if (index < inputs.length - 1) {
+                    inputs[index + 1].focus(); // 次のボックスへフォーカス移動
+                }
+            } else {
+                input.classList.remove("filled");
+            }
+        });
+
+        // バックスペースで前のボックスに戻る処理
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Backspace" && input.value.length === 0) {
+                if (index > 0) {
+                    inputs[index - 1].focus();
+                }
+            }
+        });
     });
 
-    // マウス操作によるペースト（貼り付け）時にも確実に発火させる処理
-    installIdInput.addEventListener('paste', function () {
-      setTimeout(() => {
-        installIdInput.dispatchEvent(new Event('input'));
-      }, 10);
-    });
-  </script>
+    /**
+     * 送信時のバリデーションエラー処理
+     */
+    document.getElementById("btn-submit").addEventListener("click", () => {
+        let fullIID = "";
+        let hasError = false;
+        let errorGroups = [];
 
+        // 全ボックスをチェック
+        inputs.forEach((input, idx) => {
+            const valLen = input.value.length;
+            if (valLen < 7) {
+                hasError = true;
+                input.classList.remove("filled");
+                input.classList.add("input-error"); // エラー用の赤いデザインを適用
+                errorGroups.push(idx + 1); // 間違っているグループ番号を記録
+            } else {
+                input.classList.remove("input-error");
+                fullIID += input.value + (idx < 8 ? "-" : "");
+            }
+        });
+
+        // エラーがある場合の処理
+        if (hasError) {
+            // エラー通知バナーを表示
+            errorBanner.style.display = "flex";
+            document.getElementById("error-message").innerText = 
+                `入力エラー: 「第 ${errorGroups.join(", ")} グループ」の数字が7桁に満っていません。確認して修正してください。`;
+            
+            // 最初にエラーが見つかった入力欄にフォーカスを合わせる
+            const firstErrorIdx = errorGroups[0] - 1;
+            inputs[firstErrorIdx].focus();
+            return;
+        }
+
+        // 全て正常な場合
+        errorBanner.style.display = "none";
+        alert("インストールの確認を行います。生成されたIID:\n\n" + fullIID);
+    });
+});
+</script>
 </body>
 </html>
