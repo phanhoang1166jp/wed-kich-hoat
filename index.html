@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>インストールID入力欄 (7桁 × 9組)</title>
+    <style>
+        :root {
+            --primary-color: #0078d4;
+            --primary-hover: #106ebe;
+            --bg-color: #e6e6e6;
+            --card-bg: #ffffff;
+            --text-color: #323130;
+            --border-color: #dadada;
+        }
+
+        body {
+            font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 840px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .microsoft-logo {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .logo-box { width: 8px; height: 8px; }
+        .box-1 { background-color: #f25022; }
+        .box-2 { background-color: #7fba00; }
+        .box-3 { background-color: #00a4ef; }
+        .box-4 { background-color: #ffb900; }
+
+        h2 {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0;
+            color: #0078d4;
+        }
+
+        .desc {
+            font-size: 13px;
+            color: #605e5c;
+            margin: 0 0 25px 0;
+            line-height: 1.6;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .group-item {
+            background-color: #faf9f8;
+            border: 1px solid #f3f2f1;
+            border-radius: 6px;
+            padding: 14px 16px;
+            text-align: left;
+        }
+
+        .group-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #323130;
+            margin-bottom: 8px;
+        }
+
+        .iid-field {
+            width: 100%;
+            height: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.15s ease-in-out;
+            color: #201f1e;
+            background-color: #ffffff;
+            font-family: "Consolas", monospace;
+            letter-spacing: 2px;
+        }
+
+        .iid-field:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+
+        .iid-field::placeholder {
+            color: #c8c6c4;
+            font-weight: 500;
+        }
+
+        .btn-submit {
+            width: 100%;
+            height: 48px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #ffffff;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        #result-box {
+            margin-top: 25px;
+            border-radius: 6px;
+            display: none;
+            text-align: left;
+        }
+
+        .result-card {
+            padding: 20px;
+            border: 1px solid #a7e1b5;
+            background-color: #f2fbf6;
+            border-radius: 6px;
+        }
+
+        .result-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #107c41;
+            margin-bottom: 12px;
+        }
+
+        .cid-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .cid-display {
+            flex: 1;
+            font-size: 18px;
+            font-family: "Consolas", monospace;
+            font-weight: 700;
+            color: #201f1e;
+            background: #ffffff;
+            padding: 12px 16px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+
+        .btn-copy {
+            background: #107c41;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+            height: 46px;
+        }
+
+        .error-card {
+            padding: 18px;
+            border: 1px solid #fde7e9;
+            border-radius: 6px;
+            background-color: #fde7e9;
+            color: #a80000;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.5;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="brand-header">
+        <div class="microsoft-logo">
+            <div class="logo-box box-1"></div>
+            <div class="logo-box box-2"></div>
+            <div class="logo-box box-3"></div>
+            <div class="logo-box box-4"></div>
+        </div>
+        <h2>インストールID入力欄 (7桁 × 9組)</h2>
+    </div>
+    
+    <p class="desc">
+        パソコン画面に表示された（7桁 × 9組）63桁のインストールIDを、各グループに7桁ずつ入力してください。<br>
+        数字を入力すると自動で次のボックスへ移動し、バックスペースで前のボックスに戻ります。
+    </p>
+    
+    <div class="grid-container">
+        <div class="group-item"><div class="group-label">第 1 グループ</div><input type="text" class="iid-field" maxlength="7" pattern="[0-9]*" inputmode="numeric" placeholder="XXXXXXX"></div>
+        <div class="group-item"><div class="group-label">第 2 グループ</div><input type="text" class="iid-field" maxlength="7" pattern="[0-9]*" inputmode="numeric" placeholder="XXXXXXX"></div>
+        <div class="group-item"><div class="group-label">第 3 グループ</div><input type="text" class="iid-field" maxlength="7" pattern="[0-9]*" inputmode="numeric" placeholder="XXXXXXX"></div>
+        <div class="group-item"><div class="group-label">第 4 グループ</div><input type="text" class="iid-field" maxlength="7" pattern="[0-9]*" inputmode="numeric" placeholder="XXXXXXX"></div>
+        <div class="group-item"><div class="group-label">第 5 グループ</div><input type="text" class="iid-field" maxlength="7" pattern="[0-9]*" inputmode="numeric" placeholder="XXXXXXX"></div>
+        <div class="group-item"><div class="group-label">第 6 グループ</div><input type="text" class="iid-field" maxlength="7" pattern="[0-9]*" inputmode="numeric" placeholder="XXXXXXX"></div>
+        <div class="group-item"><div class="group-label">第 7 グループ</div><input type="text" class="iid-field" maxlength="7" pattern="[0-9]*" inputmode="numeric" placeholder="XXXXXXX"></div>
+        <div class="group-item"><div class="group-label">第 8 グループ</div><input type="text" class="iid-field" maxlength="7" pattern="[0-9]*" inputmode="numeric" placeholder="XXXXXXX"></div>
+        <div class="group-item"><div class="group-label">第 9 グループ</div><input type="text" class="iid-field" maxlength="7" pattern="[0-9]*" inputmode="numeric" placeholder="XXXXXXX"></div>
+    </div>
+    
+    <button class="btn-submit" id="submit-btn">ライセンスを確認して次へ</button>
+
+    <div id="result-box"></div>
+</div>
+
+<script>
+    const inputs = document.querySelectorAll('.iid-field');
+
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', () => {
+            input.value = input.value.replace(/[^0-9]/g, '');
+            if (input.value.length === 7 && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && input.value.length === 0 && index > 0) {
+                inputs[index - 1].focus();
+            }
+        });
+
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pastedData = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+            
+            if (pastedData.length >= 63) {
+                for (let i = 0; i < inputs.length; i++) {
+                    inputs[i].value = pastedData.substr(i * 7, 7);
+                }
+                inputs[inputs.length - 1].focus();
+            } else {
+                input.value = pastedData.substr(0, 7);
+            }
+        });
+    });
+
+    document.getElementById('submit-btn').addEventListener('click', function() {
+        const resultBox = document.getElementById('result-box');
+        let iidValue = '';
+        inputs.forEach(input => iidValue += input.value.trim());
+
+        if (iidValue.length !== 63) {
+            alert("インストールIDを正しく入力してください（63桁が必要です）。");
+            return;
+        }
+
+        resultBox.style.display = "block";
+        resultBox.innerHTML = `
+            <div style="padding: 16px; background: #faf9f8; border: 1px solid #dadada; border-radius:6px; font-size: 14px; text-align:center; color:#666;">
+                🔄 ライセンスを確認しています...
+            </div>
+        `;
+
+        fetch('/api/get-cid', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ iid: iidValue })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                resultBox.innerHTML = `
+                    <div class="result-card">
+                        <div class="result-title">✓ 確認 ID (Confirmation ID) が正常に取得されました</div>
+                        <div class="cid-wrapper">
+                            <div class="cid-display" id="cid-text">${data.cid}</div>
+                            <button class="btn-copy" onclick="copyCid()">コピー</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                resultBox.innerHTML = `
+                    <div class="error-card">
+                        ⚠️ <strong>エラー:</strong> ${data.message}
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            resultBox.innerHTML = `
+                <div class="error-card">
+                    📡 <strong>通信エラー:</strong> サーバーに接続できませんでした。
+                </div>
+            `;
+        });
+    });
+
+    function copyCid() {
+        const cidText = document.getElementById('cid-text').innerText;
+        navigator.clipboard.writeText(cidText).then(() => {
+            const copyBtn = document.querySelector('.btn-copy');
+            copyBtn.innerText = 'コピー完了';
+            setTimeout(() => { copyBtn.innerText = 'コピー'; }, 2000);
+        });
+    }
+</script>
+</body>
+</html>
